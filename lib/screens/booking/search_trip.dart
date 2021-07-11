@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_gh/screens/booking/pending_trips_screen.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
 import 'package:travel_gh/shared/custom_textformfield.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -173,10 +174,10 @@ class CustomSliverPersistentHeader extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     // DateTimeRange(
     //     start: DateTime.now(), end: DateTime.now() + DateTime.daysPerWeek);
-    return appBarWidget(shrinkOffset);
+    return appBarWidget(shrinkOffset, context);
   }
 
-  appBarWidget(double shrinkOffset) {
+  appBarWidget(double shrinkOffset, BuildContext context) {
     if (shrinkOffset >= 50) {
       return AnimatedContainer(
           duration: Duration(milliseconds: 200),
@@ -206,7 +207,15 @@ class CustomSliverPersistentHeader extends SliverPersistentHeaderDelegate {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('data'),
-                        IconButton(icon: Icon(Icons.menu), onPressed: () {})
+                        IconButton(
+                            icon: Icon(Icons.menu),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PendingTripsScreen()));
+                            })
                       ],
                     ),
                     Text(
