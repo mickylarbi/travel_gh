@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_gh/screens/authentication/sign_in/sign_in_screen.dart';
+import 'package:travel_gh/screens/booking/search_trip.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
 import 'package:travel_gh/shared/custom_textformfield.dart';
@@ -59,7 +60,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(height: 24),
                   tncRow(),
                   SizedBox(height: 24),
-                  CustomRoundedButton(onPressed: () {}),
+                  CustomRoundedButton(
+                    height: 60,
+                    width: double.infinity,
+                    text: 'REGISTER',
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (conotext) => SearchTripScreen()));
+                    },
+                  ),
                   SizedBox(height: 24),
                   CustomTextSpan(
                     firstText: 'Already have an account?',

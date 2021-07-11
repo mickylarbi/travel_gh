@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_gh/screens/authentication/register/register_screen.dart';
+import 'package:travel_gh/screens/booking/search_trip.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
 import 'package:travel_gh/shared/custom_textformfield.dart';
@@ -43,7 +44,17 @@ class _SignInScreenState extends State<SignInScreen> {
                     obscureText: true,
                   ),
                   SizedBox(height: 24),
-                  CustomRoundedButton(),
+                  CustomRoundedButton(
+                    height: 60,
+                    width: double.infinity,
+                    text: 'SIGN IN',
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SearchTripScreen()));
+                    },
+                  ),
                   SizedBox(height: 24),
                   CustomTextSpan(
                     firstText: 'Don\'t have an account?',
