@@ -348,10 +348,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   ));
                           Future.delayed(Duration(seconds: 2), () {
                             Navigator.pop(context);
-                          }).then((value) {
-                            Navigator.push(
-                                context, MaterialPageRoute(builder: (context)=>PaymentConfirmedScreen()));
-                          });
+                          }).then((value) {});
                         },
                       ),
                     ],
