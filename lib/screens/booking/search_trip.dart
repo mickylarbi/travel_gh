@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:travel_gh/screens/booking/booking_screen.dart';
 import 'package:travel_gh/screens/booking/pending_trips_screen.dart';
+import 'package:travel_gh/shared/customSliverList.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
 import 'package:travel_gh/shared/custom_textformfield.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,18 +26,17 @@ class SearchTripScreen extends StatelessWidget {
                   delegate: CustomSliverPersistentHeader()),
               SliverList(
                   delegate: CustomSliverList([
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
-                tripCard(),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
+                tripCard(context),
               ])),
             ],
           ),
@@ -44,7 +45,7 @@ class SearchTripScreen extends StatelessWidget {
     );
   }
 
-  Container tripCard() {
+  Container tripCard(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       padding: EdgeInsets.all(18),
@@ -151,6 +152,12 @@ class SearchTripScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   CustomRoundedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookingScreen()));
+                    },
                     text: 'BOOK NOW',
                     width: 100,
                     textStyle: TextStyle(
@@ -265,6 +272,3 @@ class CustomSliverPersistentHeader extends SliverPersistentHeaderDelegate {
   }
 }
 
-class CustomSliverList extends SliverChildListDelegate {
-  CustomSliverList(List<Widget> children) : super(children);
-}

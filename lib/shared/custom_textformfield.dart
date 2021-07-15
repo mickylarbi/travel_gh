@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final TextInputType keyboardType;
+  final List<TextInputFormatter> inputFormatters;
+  final bool enabled;
+
   CustomTextFormField({
     Key key,
     this.hintText,
     this.obscureText = false,
     this.keyboardType,
+    this.inputFormatters,
+    this.enabled,
   }) : super(key: key);
 
   @override
@@ -17,6 +23,8 @@ class CustomTextFormField extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: Color(0xFFF0F0F0)),
       child: TextFormField(
+        inputFormatters: inputFormatters,
+        enabled: enabled,
         keyboardType: keyboardType,
         obscureText: obscureText,
         decoration: InputDecoration(

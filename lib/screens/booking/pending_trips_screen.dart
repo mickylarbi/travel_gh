@@ -13,6 +13,9 @@ class _PendingTripsScreenState extends State<PendingTripsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
+        textTheme:
+            TextTheme(headline6: TextStyle(color: Colors.black, fontSize: 16)),
         title: Text('Pending Trips'),
         backgroundColor: Colors.white,
       ),
