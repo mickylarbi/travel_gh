@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:travel_gh/screens/booking/ticket_screen.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:travel_gh/shared/customSliverList.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
@@ -58,20 +59,15 @@ class _BookingScreenState extends State<BookingScreen> {
             child: CustomScrollView(
               slivers: <Widget>[
                 SliverAppBar(
-                  backgroundColor: Colors.white.withOpacity(.8),
+                  backgroundColor: Colors.white.withOpacity(.9),
                   elevation: 0,
                   iconTheme: IconThemeData(color: Colors.black),
                   textTheme: TextTheme(
                       headline6: TextStyle(color: Colors.black, fontSize: 16)),
-                  expandedHeight: 120,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.1,
                   pinned: true,
                   floating: false,
                   flexibleSpace: FlexibleSpaceBar(
-                    stretchModes: [
-                      StretchMode.blurBackground,
-                      StretchMode.fadeTitle,
-                      StretchMode.zoomBackground,
-                    ],
                     title: Text('Book your seats...',
                         style: TextStyle(color: Colors.black)),
                   ),
@@ -350,7 +346,9 @@ class _BookingScreenState extends State<BookingScreen> {
                             Navigator.pop(context);
                           }).then((value) {
                             Navigator.push(
-                                context, MaterialPageRoute(builder: (context)=>PaymentConfirmedScreen()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TicketScreen()));
                           });
                         },
                       ),
