@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
+import 'package:travel_gh/utils/models/route.dart';
 import 'package:travel_gh/utils/services/firestore_service.dart';
 // import 'package:travel_gh/utils/services/firestore_service.dart';
 
@@ -148,34 +149,11 @@ extension on DateTime {
   }
 }
 
-class Company {
-  final String name;
-  final String photoUrl;
 
-  Company(this.name, this.photoUrl);
-}
 
-class Route {
-  final String departure;
-  final String destination;
-  final String companyId;
-  final String price;
-  final List features;
-  final int seatsAvailable;
-  final DateTime dateTime;
 
-  Route(
-      {this.departure,
-      this.destination,
-      this.companyId,
-      this.price,
-      this.features,
-      this.seatsAvailable,
-      this.dateTime});
-}
-
-List<Route> routes = [
-  Route(
+List<CustomRoute> _routes = [
+  CustomRoute(
       departure: 'Kumasi',
       destination: 'Cape Coast',
       price: '40',

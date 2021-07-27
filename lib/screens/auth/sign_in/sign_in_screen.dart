@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travel_gh/screens/auth/register/register_screen.dart';
-import 'package:travel_gh/screens/booking/search_trip_screen.dart';
 import 'package:travel_gh/shared/app_services.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
@@ -74,7 +73,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             content: 'Password is invalid');
                       } else
                         FirebaseAuthService(context).signInUser(
-                            _emailController.text.trim(), _passwordController.text);
+                            _emailController.text.trim(),
+                            _passwordController.text);
                       // Navigacontext) => SearchTripScreen()));
                     },
                   ),
@@ -96,5 +96,12 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

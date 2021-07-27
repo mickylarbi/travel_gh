@@ -13,7 +13,7 @@ class CustomTextSpan extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(firstText),
+          if (firstText != null) Text(firstText),
           TextButton(onPressed: onPressed, child: Text(secondText))
         ]);
   }

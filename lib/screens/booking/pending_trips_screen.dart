@@ -46,7 +46,6 @@ class _PendingTripsScreenState extends State<PendingTripsScreen> {
               },
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  
                   child: Text('Sign Out'),
                   value: 'Sign Out',
                 )
@@ -110,7 +109,8 @@ class _PendingTripsScreenState extends State<PendingTripsScreen> {
                                     PopupMenuButton(
                                       icon: Icon(Icons.more_vert),
                                       onSelected: (value) {
-                                        FirebaseAuthService(context).signOutUser();
+                                        FirebaseAuthService(context)
+                                            .signOutUser();
                                       },
                                       itemBuilder: (context) => [
                                         PopupMenuItem(
@@ -178,6 +178,6 @@ class _PendingTripsScreenState extends State<PendingTripsScreen> {
         ),
       ),
     );
-  }
+  } //TODO: cancel trip
+//TODO: change list tile to large card
 }
-//TODO: cancel trip

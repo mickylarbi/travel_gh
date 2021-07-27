@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_gh/screens/auth/auth_widget.dart';
-import 'package:travel_gh/screens/auth/sign_in/sign_in_screen.dart';
 import 'package:travel_gh/shared/app_services.dart';
 import 'package:travel_gh/utils/models/custom_user.dart';
 

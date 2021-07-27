@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travel_gh/screens/auth/sign_in/sign_in_screen.dart';
-import 'package:travel_gh/screens/booking/search_trip_screen.dart';
 import 'package:travel_gh/shared/app_services.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
@@ -144,7 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else if (_passwordController.text != _confirmPasswordController.text) {
       AppServices.showAlertDialog(context, content: 'Passwords do not match');
     } else if (_passwordController.text.length < 6) {
-      AppServices.showAlertDialog(context, content: 'Password should not be less than 6 characters');
+      AppServices.showAlertDialog(context,
+          content: 'Password should not be less than 6 characters');
     } else if (!_tnCAgreed) {
       AppServices.showAlertDialog(context,
           content: 'You have to agree to the Terms and Conditions');
@@ -157,5 +157,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _passwordController.text);
   }
 
-  //TODO: dispose textcontrollers
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _surnameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+  // TODO: alert dialog barrier
 }

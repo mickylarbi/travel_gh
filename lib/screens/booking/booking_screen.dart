@@ -1,15 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:travel_gh/screens/booking/ticket_screen.dart';
+import 'package:travel_gh/shared/app_services.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:travel_gh/shared/customSliverList.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
 import 'package:travel_gh/shared/custom_textformfield.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:travel_gh/utils/models/company.dart';
+import 'package:travel_gh/utils/models/route.dart';
+import 'package:travel_gh/utils/services/firebase_auth_service.dart';
+import 'package:travel_gh/utils/services/firebase_storage_service.dart';
+import 'package:travel_gh/utils/services/firestore_service.dart';
 
 class BookingScreen extends StatefulWidget {
-  const BookingScreen({Key key}) : super(key: key);
+  final CustomRoute route;
+  final Company company;
+  const BookingScreen({Key key, this.route, this.company}) : super(key: key);
 
   @override
   _BookingScreenState createState() => _BookingScreenState();
@@ -20,18 +29,25 @@ enum MobileNetwork { MTN, Vodafone, AirtelTigo }
 enum CardType { mastercard, visa }
 
 class _BookingScreenState extends State<BookingScreen> {
-  int _seats = 1;
+  int _seatsBooked = 1;
   MobileNetwork _mobileNetwork;
   CardType _cardType;
   PaymentMethod _paymentMethod;
 
+  TextEditingController _mobileMoneyController = TextEditingController();
+  TextEditingController _creditCardController = TextEditingController();
+
   momoOnChanged(value) {
     _mobileNetwork = value;
+    _cardType = null;
+
     setState(() {});
   }
 
   creditCardOnChanged(value) {
     _cardType = value;
+    _mobileNetwork = null;
+
     setState(() {});
   }
 
@@ -79,7 +95,14 @@ class _BookingScreenState extends State<BookingScreen> {
                     [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text('How many seats?'), deIncrementor()],
+                        children: [
+                          Text('How many seats?'),
+                          Column(children: [
+                            deIncrementor(),
+                            Text(
+                                '${widget.route.seatsAvailable - _seatsBooked} left')
+                          ])
+                        ],
                       ),
                       Divider(height: 70),
                       Text('How would you like to pay?'),
@@ -91,19 +114,24 @@ class _BookingScreenState extends State<BookingScreen> {
                           print('$bool');
 
                           if (int == 0 && bool == false) {
-                            if (_paymentMethod is PaymentMethod)
+                            if (_paymentMethod is PaymentMethod) {
                               _paymentMethod = PaymentMethod.creditCard;
-                            else
+                              _mobileNetwork = null;
+                            } else {
                               _paymentMethod = PaymentMethod.mobileMoney;
+                              _cardType = null;
+                            }
                           } else if (int == 1 && bool == false) {
-                            if (_paymentMethod is PaymentMethod)
+                            if (_paymentMethod is PaymentMethod) {
                               _paymentMethod = PaymentMethod.mobileMoney;
-                            else
+                              _cardType = null;
+                            } else {
                               _paymentMethod = PaymentMethod.creditCard;
+                              _mobileNetwork = null;
+                            }
                           } else {
                             _paymentMethod = null;
                           }
-                          print('$_paymentMethod');
                         },
                         children: [
                           ExpansionPanelRadio(
@@ -149,6 +177,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                           .toList(),
                                     ),
                                     CustomTextFormField(
+                                      controller: _mobileMoneyController,
                                       hintText: 'Enter mobile money number',
                                       enabled: _mobileNetwork is MobileNetwork,
                                       keyboardType: TextInputType.phone,
@@ -200,6 +229,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                         .toList(),
                                   ),
                                   CustomTextFormField(
+                                    controller: _creditCardController,
                                     hintText: 'Enter credit card info',
                                     enabled: _cardType is CardType,
                                     inputFormatters: [
@@ -225,11 +255,22 @@ class _BookingScreenState extends State<BookingScreen> {
                                 Container(
                                     alignment: Alignment.centerLeft,
                                     height: 60,
-                                    child: Text(
-                                      'Trip Summary',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Trip Summary',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          widget.company.name,
+                                          style: TextStyle(fontSize: 16),
+                                        )
+                                      ],
                                     )),
                                 SizedBox(height: 20),
                                 Text(
@@ -245,7 +286,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(fontSize: 10),
                                 ),
                                 Text(
-                                  'Kumasi',
+                                  widget.route.departure,
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 SizedBox(height: 10),
@@ -254,7 +295,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(fontSize: 10),
                                 ),
                                 Text(
-                                  'Cape Coast',
+                                  widget.route.destination,
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ],
@@ -265,10 +306,25 @@ class _BookingScreenState extends State<BookingScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                    height: 60,
-                                    color: Colors.black,
-                                    child: Image.asset('assets/images/oa.png',
-                                        height: 60, fit: BoxFit.fitHeight)),
+                                  height: 60,
+                                  child: FutureBuilder<String>(
+                                      future: FirebaseStorageService()
+                                          .getCompanyPhotosUrl(
+                                              '${widget.company.photoUrl}linkedin_banner_image_1.png'),
+                                      builder: (context, ffsnapshot) {
+                                        if (ffsnapshot.hasError) {
+                                          return Text("Something went wrong");
+                                        }
+
+                                        if (ffsnapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return Image.network(
+                                            ffsnapshot.data,
+                                          );
+                                        }
+                                        return CupertinoActivityIndicator();
+                                      }),
+                                ),
                                 SizedBox(height: 20),
                                 Text(
                                   'Departure',
@@ -283,7 +339,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(fontSize: 10),
                                 ),
                                 Text(
-                                  '21 April 2021',
+                                  DateFormat.yMMMMd()
+                                      .format(widget.route.dateTime),
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 SizedBox(height: 10),
@@ -292,7 +349,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                   style: TextStyle(fontSize: 10),
                                 ),
                                 Text(
-                                  '08:00 AM',
+                                  DateFormat.jm()
+                                      .format(widget.route.dateTime)
+                                      .padLeft(8, '0'),
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ],
@@ -300,7 +359,24 @@ class _BookingScreenState extends State<BookingScreen> {
                           )
                         ],
                       ),
-                      SizedBox(height: 50),
+                      SizedBox(height: 10),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: AppServices.getFeaturesFromString(
+                                  widget.route.features)
+                              .map((e) => Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                    alignment: Alignment.center,
+                                    height: 28,
+                                    width: 28,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xFF00CAD9)),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: e,
+                                  ))
+                              .toList()),
+                      SizedBox(height: 30),
                       Center(
                         child: Text(
                           'Price:',
@@ -311,45 +387,71 @@ class _BookingScreenState extends State<BookingScreen> {
                         ),
                       ),
                       Center(
-                          child: Text(
-                        'GHC 80.00',
-                        style: TextStyle(
-                            color: Color(0xFF00C0CC),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      )),
+                        child: Text(
+                          'GHC ${widget.route.price}',
+                          style: TextStyle(
+                              color: Color(0xFF00C0CC),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
                       SizedBox(height: 30),
                       CustomRoundedButton(
                         text: 'CONFIRM TRIP',
                         height: 60,
                         onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    content: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'Confirming payment\nPlease wait...',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        SizedBox(height: 10),
-                                        CupertinoActivityIndicator()
-                                      ],
-                                    ),
-                                  ));
-                          Future.delayed(Duration(seconds: 2), () {
-                            Navigator.pop(context);
-                          }).then((value) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TicketScreen()));
-                          });
+                          print(_mobileMoneyController.text);
+                          if ((_cardType == null && _mobileNetwork == null) ||
+                              ((_creditCardController.text.isEmpty ||
+                                      _creditCardController.text == null) &&
+                                  (_mobileMoneyController.text.isEmpty ||
+                                      _mobileMoneyController.text == null)))
+                            AppServices.showAlertDialog(context,
+                                title: null,
+                                content: 'Please fill out payment details');
+                          else {
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      content: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Confirming payment\nPlease wait...',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 10),
+                                          CupertinoActivityIndicator()
+                                        ],
+                                      ),
+                                    ));
+
+                            try {
+                              FireStoreService()
+                                  .firestore
+                                  .collection('trips')
+                                  .add({
+                                'userId': FirebaseAuthService().currentUser.uid,
+                                'routeId': widget.route.id,
+                                'seatsBooked': _seatsBooked,
+                              }).then((value) {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TicketScreen()));
+                              });
+                            } catch (e) {
+                              Navigator.pop(context);
+                              AppServices.showAlertDialog(context, content: e);
+                              print(e);
+                            }
+                          }
                         },
                       ),
                     ],
@@ -377,8 +479,8 @@ class _BookingScreenState extends State<BookingScreen> {
             child: InkWell(
               splashColor: Colors.grey[300].withOpacity(.5),
               onTap: () {
-                if (_seats > 1) {
-                  --_seats;
+                if (_seatsBooked > 1) {
+                  --_seatsBooked;
                   setState(() {});
                 }
               },
@@ -392,7 +494,7 @@ class _BookingScreenState extends State<BookingScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14.0),
           child: Text(
-            '$_seats',
+            '$_seatsBooked',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
@@ -407,8 +509,8 @@ class _BookingScreenState extends State<BookingScreen> {
             child: InkWell(
               splashColor: Color(0xFF358FA0).withOpacity(.5),
               onTap: () {
-                if (_seats < 10) {
-                  ++_seats;
+                if (widget.route.seatsAvailable > _seatsBooked) {
+                  ++_seatsBooked;
                   setState(() {});
                 }
               },

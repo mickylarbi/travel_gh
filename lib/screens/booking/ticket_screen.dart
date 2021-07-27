@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:travel_gh/screens/booking/pending_trips_screen.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:travel_gh/shared/custom_textspan.dart';
 
 class TicketScreen extends StatelessWidget {
   const TicketScreen({Key key}) : super(key: key);
@@ -27,7 +29,7 @@ class TicketScreen extends StatelessWidget {
                       style: TextStyle(color: Colors.black)),
                 ),
               ),
-              SliverFillRemaining(
+              SliverToBoxAdapter(
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -115,6 +117,19 @@ class TicketScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+              ),
+
+              // TODO: show on demand
+              SliverToBoxAdapter(
+                child: CustomTextSpan(
+                  secondText: 'Go to Pending Trips',
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PendingTripsScreen()));
+                  },
                 ),
               )
             ],

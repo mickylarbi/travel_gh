@@ -7,8 +7,8 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final List<TextInputFormatter> inputFormatters;
   final bool enabled;
-
   final TextEditingController controller;
+  final TextCapitalization textCapitalization;
 
   CustomTextFormField({
     Key key,
@@ -18,6 +18,7 @@ class CustomTextFormField extends StatelessWidget {
     this.inputFormatters,
     this.enabled,
     this.controller,
+    this.textCapitalization = TextCapitalization.none,
   }) : super(key: key);
 
   @override
@@ -26,6 +27,7 @@ class CustomTextFormField extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: Color(0xFFF0F0F0)),
       child: TextFormField(
+        textCapitalization: textCapitalization,
         controller: controller,
         inputFormatters: inputFormatters,
         enabled: enabled,
