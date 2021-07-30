@@ -149,6 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       AppServices.showAlertDialog(context,
           content: 'You have to agree to the Terms and Conditions');
     } else
+    
       FirebaseAuthService(context).registerUser(
           CustomUser(
               firstName: _firstNameController.text.trim(),
@@ -166,5 +167,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _confirmPasswordController.dispose();
     super.dispose();
   }
-  // TODO: alert dialog barrier
 }

@@ -18,16 +18,15 @@ class CustomRoute {
       this.seatsAvailable,
       this.dateTime});
 
-  CustomRoute fromFirebase(Map<String, dynamic> firebaseMap, String rId) {
-    return CustomRoute(
-        departure: firebaseMap['departure'],
-        destination: firebaseMap['destination'],
-        companyId: firebaseMap['companyId'],
-        price: firebaseMap['price'],
-        features: List.from(firebaseMap['features']),
-        seatsAvailable: firebaseMap['seatsAvailable'],
-        dateTime: DateTime.fromMillisecondsSinceEpoch(
-            firebaseMap['dateTime'].millisecondsSinceEpoch),
-        id: rId);
-  }
+  CustomRoute fromFirebase(Map<String, dynamic> firebaseMap,[ String rId]) =>
+      CustomRoute(
+          departure: firebaseMap['departure'],
+          destination: firebaseMap['destination'],
+          companyId: firebaseMap['companyId'],
+          price: firebaseMap['price'],
+          features: List.from(firebaseMap['features']),
+          seatsAvailable: firebaseMap['seatsAvailable'],
+          dateTime: DateTime.fromMillisecondsSinceEpoch(
+              firebaseMap['dateTime'].millisecondsSinceEpoch),
+          id: rId);
 }

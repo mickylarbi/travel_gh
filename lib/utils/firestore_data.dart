@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_gh/shared/custom_rounded_button.dart';
-import 'package:travel_gh/utils/models/route.dart';
 import 'package:travel_gh/utils/services/firestore_service.dart';
 // import 'package:travel_gh/utils/services/firestore_service.dart';
 
@@ -150,17 +149,6 @@ extension on DateTime {
 }
 
 
-
-
-List<CustomRoute> _routes = [
-  CustomRoute(
-      departure: 'Kumasi',
-      destination: 'Cape Coast',
-      price: '40',
-      seatsAvailable: 20,
-      dateTime: DateTime(2021, 7, 23, 6),
-      features: [])
-];
 
 List<String> companyIds = [
   '4pWMhNWtq8bP7pNIRZ3Y',

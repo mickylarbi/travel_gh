@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:travel_gh/shared/custom_rounded_button.dart';
-import 'package:travel_gh/utils/services/firebase_storage_service.dart';
-import 'package:travel_gh/utils/services/firestore_service.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key key}) : super(key: key);
@@ -13,10 +10,6 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   ScrollController _scrollController = ScrollController();
-
-  var _selectedDestination;
-
-  var _selectedDeparture;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      customDropDownButton(),
+                                      // customDropDownButton(),
                                       SizedBox(height: 20),
                                       Text(
                                         'To:',
@@ -91,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      customDropDownButton(true),
+                                      // customDropDownButton(true),
                                     ],
                                   ),
                                 ),
@@ -135,31 +128,31 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  customDropDownButton([bool isDestination = false]) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: Color(0xFFF0F0F0)),
-      child: DropdownButtonFormField(
-        value: isDestination ? _selectedDestination : _selectedDeparture,
-        onChanged: (newValue) {
-          if (isDestination)
-            _selectedDestination = newValue;
-          else
-            _selectedDeparture = newValue;
-        },
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 18),
-          border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10)),
-        ),
-        // items: vlValue
-        //     .map((e) => DropdownMenuItem(
-        //           value: e,
-        //           child: Text(e),
-        //         ))
-        //     .toList(),
-      ),
-    );
-  }
+  // customDropDownButton([bool isDestination = false]) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(10), color: Color(0xFFF0F0F0)),
+  //     child: DropdownButtonFormField(
+  //       value: isDestination ? _selectedDestination : _selectedDeparture,
+  //       onChanged: (newValue) {
+  //         if (isDestination)
+  //           _selectedDestination = newValue;
+  //         else
+  //           _selectedDeparture = newValue;
+  //       },
+  //       decoration: InputDecoration(
+  //         contentPadding: EdgeInsets.symmetric(horizontal: 18),
+  //         border: OutlineInputBorder(
+  //             borderSide: BorderSide.none,
+  //             borderRadius: BorderRadius.circular(10)),
+  //       ),
+  //       // items: vlValue
+  //       //     .map((e) => DropdownMenuItem(
+  //       //           value: e,
+  //       //           child: Text(e),
+  //       //         ))
+  //       //     .toList(),
+  //     ),
+  //   );
+  // }
 }

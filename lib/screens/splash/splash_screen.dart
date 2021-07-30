@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travel_gh/screens/auth/auth_widget.dart';
-import 'package:travel_gh/screens/booking/search_trip_screen.dart';
-import 'package:travel_gh/screens/sanbox.dart';
 import 'package:travel_gh/shared/background.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,10 +15,9 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(Duration(seconds: 3)).then((value) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SearchTripScreen()));
+          context, MaterialPageRoute(builder: (context) => AuthWidget()));
     });
   }
-  // TODO: change to auth widget
 
   @override
   Widget build(BuildContext context) {

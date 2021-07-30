@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:travel_gh/screens/booking/pending_trips_screen.dart';
 import 'package:travel_gh/screens/booking/ticket_screen.dart';
 import 'package:travel_gh/shared/app_services.dart';
 import 'package:travel_gh/shared/background.dart';
@@ -11,6 +12,7 @@ import 'package:travel_gh/shared/custom_textformfield.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:travel_gh/utils/models/company.dart';
 import 'package:travel_gh/utils/models/route.dart';
+import 'package:travel_gh/utils/models/trip.dart';
 import 'package:travel_gh/utils/services/firebase_auth_service.dart';
 import 'package:travel_gh/utils/services/firebase_storage_service.dart';
 import 'package:travel_gh/utils/services/firestore_service.dart';
@@ -246,117 +248,127 @@ class _BookingScreenState extends State<BookingScreen> {
                         ],
                       ),
                       Divider(height: 70),
-                      Row(
+                      Column(
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    alignment: Alignment.centerLeft,
-                                    height: 60,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Trip Summary',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          widget.company.name,
-                                          style: TextStyle(fontSize: 16),
-                                        )
-                                      ],
-                                    )),
-                                SizedBox(height: 20),
-                                Text(
-                                  'Route',
-                                  style: TextStyle(
-                                      color: Color(0xFFA9A9A9),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'From:',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                Text(
-                                  widget.route.departure,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'To:',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                Text(
-                                  widget.route.destination,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
+                          Text(
+                            'Trip Summary',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600),
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 60,
-                                  child: FutureBuilder<String>(
-                                      future: FirebaseStorageService()
-                                          .getCompanyPhotosUrl(
-                                              '${widget.company.photoUrl}linkedin_banner_image_1.png'),
-                                      builder: (context, ffsnapshot) {
-                                        if (ffsnapshot.hasError) {
-                                          return Text("Something went wrong");
-                                        }
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        alignment: Alignment.centerLeft,
+                                        height: 60,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              widget.company.name,
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ],
+                                        )),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      'Route',
+                                      style: TextStyle(
+                                          color: Color(0xFFA9A9A9),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'From:',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Text(
+                                      widget.route.departure,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'To:',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Text(
+                                      widget.route.destination,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      child: Column(
+                                        children: [
+                                          FutureBuilder<String>(
+                                              future: FirebaseStorageService()
+                                                  .getCompanyPhotosUrl(
+                                                      '${widget.company.photoUrl}logo_transparent.png'),
+                                              builder: (context, ffsnapshot) {
+                                                if (ffsnapshot.hasError) {
+                                                  return Text(
+                                                      "Something went wrong");
+                                                }
 
-                                        if (ffsnapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          return Image.network(
-                                            ffsnapshot.data,
-                                          );
-                                        }
-                                        return CupertinoActivityIndicator();
-                                      }),
+                                                if (ffsnapshot
+                                                        .connectionState ==
+                                                    ConnectionState.done) {
+                                                  return Image.network(
+                                                    ffsnapshot.data,
+                                                    height: 60,
+                                                  );
+                                                }
+                                                return CupertinoActivityIndicator();
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      'Departure',
+                                      style: TextStyle(
+                                          color: Color(0xFFA9A9A9),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'Date:',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Text(
+                                      DateFormat.yMMMMd()
+                                          .format(widget.route.dateTime),
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'Time:',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Text(
+                                      DateFormat.jm()
+                                          .format(widget.route.dateTime)
+                                          .padLeft(8, '0'),
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(height: 20),
-                                Text(
-                                  'Departure',
-                                  style: TextStyle(
-                                      color: Color(0xFFA9A9A9),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Date:',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                Text(
-                                  DateFormat.yMMMMd()
-                                      .format(widget.route.dateTime),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Time:',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                Text(
-                                  DateFormat.jm()
-                                      .format(widget.route.dateTime)
-                                      .padLeft(8, '0'),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          )
+                              )
+                            ],
+                          ),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -439,12 +451,29 @@ class _BookingScreenState extends State<BookingScreen> {
                                 'userId': FirebaseAuthService().currentUser.uid,
                                 'routeId': widget.route.id,
                                 'seatsBooked': _seatsBooked,
-                              }).then((value) {
+                              }).then((value) async {
+                                Trip trip = await FireStoreService()
+                                    .getTripWithId(value.id);
+                                CustomRoute route = await FireStoreService()
+                                    .getRouteWithId(trip.routeId);
+                                Company company = await FireStoreService()
+                                    .getCompanyWithId(route.companyId);
+
                                 Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PendingTripsScreen()));
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => TicketScreen()));
+                                        builder: (context) => TicketScreen(
+                                              trip: trip,
+                                              route: route,
+                                              company: company,
+                                            )));
                               });
                             } catch (e) {
                               Navigator.pop(context);

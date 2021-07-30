@@ -37,7 +37,6 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
 
   DateTime _focusedDay = DateTime.now();
 
-  // TODO: change app bar title
   @override
   void initState() {
     super.initState();
@@ -47,7 +46,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async => true,
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -106,7 +105,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                               return Column(
                                   children: FireStoreService()
                                       .getRouteListFromSnapshot(snapshot)
-                                      .map((e) => tripCard(context, e))
+                                      .map((e) => routeCard(context, e))
                                       .toList());
                             }),
                       ],
@@ -129,13 +128,19 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
                                         padding: EdgeInsets.symmetric(
-                                            horizontal: 24),
+                                            horizontal: 14),
                                         alignment: Alignment.centerLeft,
                                         height: 50,
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
+                                            IconButton(
+                                                icon: Icon(Icons.menu),
+                                                onPressed: () {
+                                                  Scaffold.of(context)
+                                                      .openDrawer();
+                                                }),
                                             Row(
                                               children: [
                                                 if (_selectedDeparture != null)
@@ -167,7 +172,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                                                   ),
                                               ],
                                             ),
-                                            appBarActions()
+                                            clearButton()
                                           ],
                                         )),
                                   )
@@ -183,7 +188,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 24),
+                                              horizontal: 14),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -193,31 +198,51 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                                             children: [
                                               Row(
                                                 mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
                                                 children: [
-                                                  Text('data'),
-                                                  appBarActions()
+                                                  IconButton(
+                                                      icon: Icon(Icons.menu),
+                                                      onPressed: () {
+                                                        Scaffold.of(context)
+                                                            .openDrawer();
+                                                      }),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    'Search Trip',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Spacer(),
+                                                  clearButton()
                                                 ],
                                               ),
-                                              Text(
-                                                'From:',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'From:',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    customDropDownButton(),
+                                                    SizedBox(height: 20),
+                                                    Text(
+                                                      'To:',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    customDropDownButton(true),
+                                                  ],
+                                                ),
                                               ),
-                                              customDropDownButton(),
-                                              SizedBox(height: 20),
-                                              Text(
-                                                'To:',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              customDropDownButton(true),
                                             ],
                                           ),
                                         ),
@@ -265,8 +290,61 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
               );
             }),
           ),
+          drawer: Drawer(
+            child: SingleChildScrollView(
+                child: Column(
+              children: [
+                UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(color: Color(0xFF00CAD9)),
+                    accountName:
+                        Text(FirebaseAuthService().currentUser.displayName),
+                    accountEmail:
+                        Text(FirebaseAuthService().currentUser.email)),
+                ListTile(
+                  title: Text('Pending Trips'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PendingTripsScreen()));
+                  },
+                ),
+                Divider(),
+                ListTile(
+                  title: Text('Sign Out'),
+                  onTap: () {
+                    FirebaseAuthService(context).signOutUser();
+                  },
+                ),
+              ],
+            )),
+          ),
         ),
       ),
+    );
+  }
+
+  clearButton() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10.0),
+      child: TextButton(
+          onPressed: () {
+            _selectedDateTime =
+                _selectedDeparture = _selectedDestination = null;
+            _scrollController.animateTo(0,
+                duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+            setState(() {});
+          },
+          style: ButtonStyle(
+              // backgroundColor:
+              //     MaterialStateProperty.all(Color(0xFF358FA0).withOpacity(.25)),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)))),
+          child: Text(
+            'CLEAR',
+            style: TextStyle(
+                color: Colors.grey[200], decoration: TextDecoration.underline),
+          )),
     );
   }
 
@@ -286,13 +364,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
           icon: Icon(Icons.more_vert),
           onSelected: (value) {
             if (value == 'Sign Out') FirebaseAuthService(context).signOutUser();
-            if (value == 'Clear') {
-              _selectedDateTime =
-                  _selectedDeparture = _selectedDestination = null;
-              _scrollController.animateTo(0,
-                  duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-              setState(() {});
-            }
+            if (value == 'Clear') {}
           },
           itemBuilder: (context) => [
             PopupMenuItem(
@@ -340,7 +412,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
     );
   }
 
-  FutureBuilder tripCard(BuildContext context, CustomRoute route) {
+  FutureBuilder routeCard(BuildContext context, CustomRoute route) {
     return FutureBuilder<Company>(
         future: FireStoreService().getCompanyWithId(route.companyId),
         builder: (context, fsnapshot) {
@@ -372,14 +444,16 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(company.name),
+                        Text(company.name,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Spacer(),
                         ConstrainedBox(
                           constraints:
                               BoxConstraints(maxHeight: 140, maxWidth: 50),
                           child: FutureBuilder<String>(
-                              future: FirebaseStorageService().getCompanyPhotosUrl(
-                                  '${company.photoUrl}linkedin_banner_image_1.png'),
+                              future: FirebaseStorageService()
+                                  .getCompanyPhotosUrl(
+                                      '${company.photoUrl}logo_transparent.png'),
                               builder: (context, ffsnapshot) {
                                 if (ffsnapshot.hasError) {
                                   return Text("Something went wrong");
@@ -541,7 +615,6 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _scrollController.dispose();
     super.dispose();
   }

@@ -17,7 +17,8 @@ class FirebaseAuthService {
 
   registerUser(CustomUser newUser, String password) async {
     try {
-      AppServices.showAlertDialog(context, title: 'Creating account...');
+      AppServices.showAlertDialog(context,
+          title: 'Creating account...', barrierDismissible: false);
       UserCredential _usercredential =
           await _auth.createUserWithEmailAndPassword(
               email: newUser.email, password: password);
@@ -46,7 +47,8 @@ class FirebaseAuthService {
   }
 
   signInUser(String email, String password) async {
-    AppServices.showAlertDialog(context, title: 'Signing in');
+    AppServices.showAlertDialog(context,
+        title: 'Signing in', barrierDismissible: false);
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Navigator.pushReplacement(
@@ -67,7 +69,11 @@ class FirebaseAuthService {
 
   signOutUser() async {
     try {
+      AppServices.showAlertDialog(context,
+          title: 'Signing Out', barrierDismissible: false);
       await _auth.signOut();
+      Navigator.pop(context);
+
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => AuthWidget()));
     } catch (e) {

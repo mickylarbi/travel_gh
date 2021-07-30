@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:travel_gh/screens/booking/pending_trips_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:travel_gh/shared/app_services.dart';
 import 'package:travel_gh/shared/background.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:travel_gh/shared/custom_textspan.dart';
+import 'package:travel_gh/utils/models/company.dart';
+import 'package:travel_gh/utils/models/route.dart';
+import 'package:travel_gh/utils/models/trip.dart';
+import 'package:travel_gh/utils/services/firebase_auth_service.dart';
+import 'package:travel_gh/utils/services/firestore_service.dart';
 
 class TicketScreen extends StatelessWidget {
-  const TicketScreen({Key key}) : super(key: key);
+  final Trip trip;
+  final CustomRoute route;
+  final Company company;
+  const TicketScreen({Key key, this.trip, this.route, this.company})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +37,57 @@ class TicketScreen extends StatelessWidget {
                   title: Text('Payment confirmed!',
                       style: TextStyle(color: Colors.black)),
                 ),
+                actions: [
+                  PopupMenuButton(
+                    icon: Icon(Icons.more_vert),
+                    onSelected: (value) {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Text('Cancel trip?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('NO')),
+                                  TextButton(
+                                      onPressed: () {
+                                        AppServices.showAlertDialog(context,
+                                            title: 'Cancelling trip',
+                                            barrierDismissible: false);
+                                        try {
+                                          FireStoreService()
+                                              .firestore
+                                              .collection('trips')
+                                              .doc(trip.id)
+                                              .delete()
+                                              .then((value) {
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          });
+                                        } catch (e) {
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          print(e);
+                                        }
+                                      },
+                                      child: Text(
+                                        'YES',
+                                        style: TextStyle(color: Colors.red),
+                                      ))
+                                ],
+                              ));
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: Text('Cancel Trip'),
+                        value: 'Cancel Trip',
+                      )
+                    ],
+                  ),
+                ],
               ),
               SliverToBoxAdapter(
                 child: Center(
@@ -58,7 +118,7 @@ class TicketScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              'Alexander The Great',
+                              FirebaseAuthService().currentUser.displayName,
                               style: TextStyle(fontSize: 20),
                             ),
                             SizedBox(height: 20),
@@ -69,49 +129,33 @@ class TicketScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              'Kumasi - Cape Coast',
+                              "${route.departure} - ${route.destination}",
                               style: TextStyle(fontSize: 20),
                             ),
                             SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Date:',
-                                      style: TextStyle(
-                                          color: Color(0xFF00C0CC),
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '21 April 2021',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Time:',
-                                      style: TextStyle(
-                                          color: Color(0xFF00C0CC),
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '08:00 AM',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            )
+                            Text(
+                              'Date:',
+                              style: TextStyle(
+                                  color: Color(0xFF00C0CC),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              DateFormat.yMMMMEEEEd().format(route.dateTime),
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'Time:',
+                              style: TextStyle(
+                                  color: Color(0xFF00C0CC),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              DateFormat.jm()
+                                  .format(route.dateTime)
+                                  .padLeft(8, '0'),
+                              style: TextStyle(fontSize: 20),
+                            ),
                           ],
                         ),
                       ),
@@ -119,19 +163,6 @@ class TicketScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // TODO: show on demand
-              SliverToBoxAdapter(
-                child: CustomTextSpan(
-                  secondText: 'Go to Pending Trips',
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PendingTripsScreen()));
-                  },
-                ),
-              )
             ],
           ),
         ),
