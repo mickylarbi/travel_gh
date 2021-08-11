@@ -63,10 +63,12 @@ class _PendingTripsScreenState extends State<PendingTripsScreen> {
               child: Column(
             children: [
               UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(color: Color(0xFF00CAD9)),
                   accountName:
                       Text(FirebaseAuthService().currentUser.displayName),
                   accountEmail: Text(FirebaseAuthService().currentUser.email)),
               ListTile(
+                leading: Icon(Icons.saved_search),
                 title: Text('Search Trip'),
                 onTap: () {
                   Navigator.pushReplacement(
@@ -77,6 +79,7 @@ class _PendingTripsScreenState extends State<PendingTripsScreen> {
               ),
               Divider(),
               ListTile(
+                leading: Icon(Icons.logout),
                 title: Text('Sign Out'),
                 onTap: () {
                   FirebaseAuthService(context).signOutUser();

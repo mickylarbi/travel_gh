@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_gh/shared/app_services.dart';
@@ -7,6 +8,7 @@ import 'package:travel_gh/utils/models/company.dart';
 import 'package:travel_gh/utils/models/route.dart';
 import 'package:travel_gh/utils/models/trip.dart';
 import 'package:travel_gh/utils/services/firebase_auth_service.dart';
+import 'package:travel_gh/utils/services/firebase_storage_service.dart';
 import 'package:travel_gh/utils/services/firestore_service.dart';
 
 class TicketScreen extends StatelessWidget {
@@ -103,11 +105,40 @@ class TicketScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FutureBuilder<String>(
+                                    future: FirebaseStorageService()
+                                        .getCompanyPhotosUrl(
+                                            '${company.photoUrl}logo_transparent.png'),
+                                    builder: (context, ffsnapshot) {
+                                      if (ffsnapshot.hasError) {
+                                        return Text("Something went wrong");
+                                      }
+
+                                      if (ffsnapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return Image.network(
+                                          ffsnapshot.data,
+                                          height: 60,
+                                        );
+                                      }
+                                      return CupertinoActivityIndicator();
+                                    }),
+                                Text(
+                                  company.name,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
                             Center(
                               child: QrImage(
-                                data: "1234567890",
+                                data: trip.id,
                                 version: QrVersions.auto,
-                                size: 200.0,
+                                size: 150.0,
                               ),
                             ),
                             SizedBox(height: 20),

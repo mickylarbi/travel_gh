@@ -112,9 +112,6 @@ class _BookingScreenState extends State<BookingScreen> {
                         elevation: 0,
                         dividerColor: Colors.transparent,
                         expansionCallback: (int, bool) {
-                          print('$int');
-                          print('$bool');
-
                           if (int == 0 && bool == false) {
                             if (_paymentMethod is PaymentMethod) {
                               _paymentMethod = PaymentMethod.creditCard;
@@ -412,7 +409,6 @@ class _BookingScreenState extends State<BookingScreen> {
                         text: 'CONFIRM TRIP',
                         height: 60,
                         onPressed: () {
-                          print(_mobileMoneyController.text);
                           if ((_cardType == null && _mobileNetwork == null) ||
                               ((_creditCardController.text.isEmpty ||
                                       _creditCardController.text == null) &&

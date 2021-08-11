@@ -29,7 +29,6 @@ class AuthWidget extends StatelessWidget {
           );
 
         if (snapshot.connectionState == ConnectionState.done) {
-          print(FireStoreService().getTripListFromSnapshot(snapshot).length);
           return FireStoreService().getTripListFromSnapshot(snapshot).length ==
                   0
               ? SearchTripScreen()

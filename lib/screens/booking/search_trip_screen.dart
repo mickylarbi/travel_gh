@@ -209,6 +209,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                                                   Text(
                                                     'Search Trip',
                                                     style: TextStyle(
+                                                        color: Colors.white,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -301,6 +302,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                     accountEmail:
                         Text(FirebaseAuthService().currentUser.email)),
                 ListTile(
+                  leading: Icon(Icons.format_list_numbered),
                   title: Text('Pending Trips'),
                   onTap: () {
                     Navigator.pushReplacement(
@@ -311,6 +313,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                 ),
                 Divider(),
                 ListTile(
+                  leading: Icon(Icons.logout),
                   title: Text('Sign Out'),
                   onTap: () {
                     FirebaseAuthService(context).signOutUser();
@@ -343,7 +346,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
           child: Text(
             'CLEAR',
             style: TextStyle(
-                color: Colors.grey[200], decoration: TextDecoration.underline),
+                color: Colors.black54, decoration: TextDecoration.underline),
           )),
     );
   }

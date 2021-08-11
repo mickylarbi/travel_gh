@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Object>(
+    return FutureBuilder<FirebaseApp>(
         future: _initialization,
         builder: (context, snapshot) {
           if (snapshot.hasError) {

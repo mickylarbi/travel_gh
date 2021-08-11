@@ -18,32 +18,39 @@ class FireStoreService {
     else if (departure == null && destination == null)
       return _routesCollection
           .where('dateTime', isEqualTo: dateTime)
+          .where('dateTime', isGreaterThan: DateTime.now())
           .snapshots();
     else if (departure == null && dateTime == null)
       return _routesCollection
           .where('destination', isEqualTo: destination)
+          .where('dateTime', isGreaterThan: DateTime.now())
           .snapshots();
     else if (destination == null && dateTime == null)
       return _routesCollection
           .where('departure', isEqualTo: departure)
+          .where('dateTime', isGreaterThan: DateTime.now())
           .snapshots();
     else if (destination == null)
       _routesCollection
           .where('departure', isEqualTo: departure)
+          .where('dateTime', isGreaterThan: DateTime.now())
           .where('dateTime', isEqualTo: dateTime)
           .snapshots();
     else if (departure == null)
       _routesCollection
           .where('destination', isEqualTo: destination)
+          .where('dateTime', isGreaterThan: DateTime.now())
           .where('dateTime', isEqualTo: dateTime)
           .snapshots();
     else if (dateTime == null)
       _routesCollection
           .where('departure', isEqualTo: departure)
+          .where('dateTime', isGreaterThan: DateTime.now())
           .where('destination', isEqualTo: destination)
           .snapshots();
     return _routesCollection
         .where('departure', isEqualTo: departure)
+        .where('dateTime', isGreaterThan: DateTime.now())
         .where('destination', isEqualTo: destination)
         .where('dateTime', isEqualTo: dateTime)
         .snapshots();
@@ -83,5 +90,4 @@ class FireStoreService {
         await firestore.collection('trips').doc(tripId).get();
     return Trip().fromFirebase(firebaseTrip.data(), tripId);
   }
-  
 }
