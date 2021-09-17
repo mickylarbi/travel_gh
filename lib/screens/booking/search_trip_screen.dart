@@ -339,9 +339,8 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
             setState(() {});
           },
           style: ButtonStyle(
-              // backgroundColor:
-              //     MaterialStateProperty.all(Color(0xFF358FA0).withOpacity(.25)),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.black54),
                   borderRadius: BorderRadius.circular(5)))),
           child: Text(
             'CLEAR',
@@ -428,7 +427,7 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
             return Container(
               margin: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               padding: EdgeInsets.all(18),
-              height: 140,
+              height: 185,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -439,166 +438,177 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
                       spreadRadius: 1)
                 ],
               ),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Text('${route.departure} - ${route.destination}'),
+                  SizedBox(height: 15),
                   Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
+                    child: Row(
                       children: [
-                        Text(company.name,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Spacer(),
-                        ConstrainedBox(
-                          constraints:
-                              BoxConstraints(maxHeight: 140, maxWidth: 50),
-                          child: FutureBuilder<String>(
-                              future: FirebaseStorageService()
-                                  .getCompanyPhotosUrl(
-                                      '${company.photoUrl}logo_transparent.png'),
-                              builder: (context, ffsnapshot) {
-                                if (ffsnapshot.hasError) {
-                                  return Text("Something went wrong");
-                                }
-
-                                if (ffsnapshot.connectionState ==
-                                    ConnectionState.done) {
-                                  return Image.network(
-                                    ffsnapshot.data,
-                                  );
-                                }
-                                return CupertinoActivityIndicator();
-                              }),
-                        ),
-                        Spacer(),
-                        Row(
+                        Expanded(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: AppServices.getFeaturesFromString(
-                                    route.features)
-                                .map((e) => Container(
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 3),
-                                      alignment: Alignment.center,
-                                      height: 28,
-                                      width: 28,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Color(0xFF00CAD9)),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: e,
-                                    ))
-                                .toList()),
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(company.name,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Spacer(),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    maxHeight: 140, maxWidth: 50),
+                                child: FutureBuilder<String>(
+                                    future: FirebaseStorageService()
+                                        .getCompanyPhotosUrl(
+                                            '${company.photoUrl}logo_transparent.png'),
+                                    builder: (context, ffsnapshot) {
+                                      if (ffsnapshot.hasError) {
+                                        return Text("Something went wrong");
+                                      }
+
+                                      if (ffsnapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return Image.network(
+                                          ffsnapshot.data,
+                                        );
+                                      }
+                                      return CupertinoActivityIndicator();
+                                    }),
+                              ),
+                              Spacer(),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: AppServices.getFeaturesFromString(
+                                          route.features)
+                                      .map((e) => Container(
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 3),
+                                            alignment: Alignment.center,
+                                            height: 28,
+                                            width: 28,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Color(0xFF00CAD9)),
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            child: e,
+                                          ))
+                                      .toList()),
+                            ],
+                          ),
+                        ),
+                        VerticalDivider(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.money,
+                                      color: Color(0xFF00CAD9),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'GHC',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    SizedBox(width: 2),
+                                    Text(route.price,
+                                        style: TextStyle(
+                                          color: Color(0xFF00CAD9),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ],
+                                ),
+                                Divider(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.lock_clock,
+                                      color: Color(0xFF00CAD9),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      DateFormat.jm()
+                                          .format(route.dateTime)
+                                          .padLeft(8, '0')
+                                          .substring(0, 5),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(width: 2),
+                                    Text(
+                                        DateFormat.jm()
+                                            .format(route.dateTime)
+                                            .padLeft(8, '0')
+                                            .substring(6, 8),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        )),
+                                  ],
+                                ),
+                                Spacer(),
+                                Stack(
+                                  fit: StackFit.loose,
+                                  alignment: Alignment.centerLeft,
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    CustomRoundedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BookingScreen(
+                                                      route: route,
+                                                      company: company,
+                                                    )));
+                                      },
+                                      text: 'BOOK NOW',
+                                      width: 100,
+                                      textStyle: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          letterSpacing: 1),
+                                      borderRadii: 5,
+                                    ),
+                                    Positioned(
+                                        left: -10,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 24,
+                                          width: 24,
+                                          child: Text(
+                                            route.seatsAvailable.toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle),
+                                        ))
+                                  ],
+                                ),
+                              ]),
+                        ),
                       ],
                     ),
-                  ),
-                  VerticalDivider(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.money,
-                                color: Color(0xFF00CAD9),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'GHC',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                              SizedBox(width: 2),
-                              Text(route.price,
-                                  style: TextStyle(
-                                    color: Color(0xFF00CAD9),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            ],
-                          ),
-                          Divider(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.lock_clock,
-                                color: Color(0xFF00CAD9),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                DateFormat.jm()
-                                    .format(route.dateTime)
-                                    .padLeft(8, '0')
-                                    .substring(0, 5),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(width: 2),
-                              Text(
-                                  DateFormat.jm()
-                                      .format(route.dateTime)
-                                      .padLeft(8, '0')
-                                      .substring(6, 8),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                  )),
-                            ],
-                          ),
-                          Spacer(),
-                          Stack(
-                            fit: StackFit.loose,
-                            alignment: Alignment.centerLeft,
-                            clipBehavior: Clip.none,
-                            children: [
-                              CustomRoundedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => BookingScreen(
-                                                route: route,
-                                                company: company,
-                                              )));
-                                },
-                                text: 'BOOK NOW',
-                                width: 100,
-                                textStyle: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    letterSpacing: 1),
-                                borderRadii: 5,
-                              ),
-                              Positioned(
-                                  left: -10,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    height: 24,
-                                    width: 24,
-                                    child: Text(
-                                      route.seatsAvailable.toString(),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle),
-                                  ))
-                            ],
-                          ),
-                        ]),
                   ),
                 ],
               ),
@@ -615,6 +625,10 @@ class _SearchTripScreenState extends State<SearchTripScreen> {
           );
         });
   }
+
+  //TODO: update limit on scroll
+  //TODO: show placeholder when listfromfirebase.length is 0
+  //TODO: update firebase security rules
 
   @override
   void dispose() {

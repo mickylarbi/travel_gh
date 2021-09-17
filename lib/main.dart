@@ -36,6 +36,7 @@ class _MyAppState extends State<MyApp> {
                   Theme.of(context).textTheme,
                 ),
               ),
+              debugShowCheckedModeBanner: false,
             );
           }
 
@@ -43,3 +44,6 @@ class _MyAppState extends State<MyApp> {
         });
   }
 }
+
+// for the most recent version of this app, go to github.com/mickylarbi/travelgh
+

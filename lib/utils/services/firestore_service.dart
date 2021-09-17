@@ -14,6 +14,7 @@ class FireStoreService {
     if (departure == null && destination == null && dateTime == null)
       return _routesCollection
           .where('dateTime', isGreaterThan: DateTime.now())
+          .limit(50)
           .snapshots();
     else if (departure == null && destination == null)
       return _routesCollection

@@ -477,7 +477,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               print(e);
                             }
                           }
-                        },
+                        }, //TODO: seats booked must be deducted from seats available
                       ),
                     ],
                   )),
